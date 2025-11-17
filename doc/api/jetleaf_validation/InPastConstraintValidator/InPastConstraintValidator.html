@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the InPastConstraintValidator.new constructor from Class InPastConstraintValidator from the jetleaf_validation library, for the Dart programming language.">
+  <title>InPastConstraintValidator.new constructor - InPastConstraintValidator - jetleaf_validation library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation.dart</a></li>
+    <li><a href="../../jetleaf_validation/InPastConstraintValidator-class.html">InPastConstraintValidator</a></li>
+    <li class="self-crumb">InPastConstraintValidator.new const constructor</li>
+  </ol>
+  <div class="self-name">InPastConstraintValidator.new</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="jetleaf_validation&#47;InPastConstraintValidator-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-constructor">InPastConstraintValidator</span> constructor 
+</h1></div>
+
+    <section class="multi-line-signature">
+      const
+      <span class="name ">InPastConstraintValidator</span>(<wbr>)
+    </section>
+    
+<section class="desc markdown">
+  <p>A built-in <strong>JetLeaf constraint validator</strong> that checks whether
+a given <a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime-class.html">DateTime</a> value represents a <strong>moment in the past</strong>, as
+specified by the <code>`@InPast`</code> annotation.</p>
+<p>This validator is <strong>timezone-aware</strong> and integrates with the active
+<a href="https://pub.dev/documentation/jetleaf_env/1.0.1/env/Environment-class.html">Environment</a> to ensure consistent temporal comparisons across
+distributed systems. It is commonly used for validating timestamps,
+historical records, or expiration dates.</p>
+<h3 id="validation-rules">Validation Rules</h3>
+<ul>
+<li>Validation <strong>passes</strong> if the value is <code>null</code>.<br>
+(This allows combining <code>@InPast</code> with <code>@NotNull</code> for stricter semantics.)</li>
+<li>Validation <strong>passes</strong> if the date/time is <strong>strictly before</strong> the current
+time at validation.</li>
+<li>Validation <strong>fails</strong> if the date/time is <strong>in the future</strong> or <strong>equal</strong>
+to the current moment.</li>
+</ul>
+<h3 id="timezone-behavior">Timezone Behavior</h3>
+<ul>
+<li>If the <code>`application.timezone`</code> (via
+<a href="https://pub.dev/documentation/jetleaf_core/1.0.1/context/AbstractApplicationContext/APPLICATION_TIMEZONE.html">AbstractApplicationContext.APPLICATION_TIMEZONE</a>) is configured in the
+environment, validation uses that zone for comparison.</li>
+<li>If no timezone is configured, validation defaults to the system’s local
+<a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime/DateTime.now.html">DateTime.now()</a> value.</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre class="language-dart"><code class="language-dart">@Target({TargetKind.fieldType})
+@Validator(InPastConstraintValidator())
+final class InPast extends WhenValidating {
+  const InPast({super.message = "Date must be in the past"});
+}
+
+class HistoricalEvent {
+  @InPast(message: "Event date must be in the past")
+  final DateTime? occurredOn;
+
+  const HistoricalEvent(this.occurredOn);
+}
+</code></pre>
+<h3 id="example-validation">Example Validation</h3>
+<table>
+<thead>
+<tr>
+<th>Input Value</th>
+<th>Result</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>null</code></td>
+<td>✅ Pass</td>
+<td>Null is ignored (nullable-friendly)</td>
+</tr>
+<tr>
+<td><code>DateTime.now().subtract(1)</code></td>
+<td>✅ Pass</td>
+<td>One second ago — valid past timestamp</td>
+</tr>
+<tr>
+<td><code>DateTime.now()</code></td>
+<td>❌ Fail</td>
+<td>Equal to "now" — not considered past</td>
+</tr>
+<tr>
+<td><code>DateTime.now().add(1)</code></td>
+<td>❌ Fail</td>
+<td>Future timestamp — invalid</td>
+</tr>
+</tbody>
+</table>
+<h3 id="execution-flow">Execution Flow</h3>
+<ol>
+<li>JetLeaf validation engine encounters an <code>@InPast</code> annotation.</li>
+<li>Retrieves the active <a href="https://pub.dev/documentation/jetleaf_env/1.0.1/env/Environment-class.html">Environment</a> and resolves the configured timezone.</li>
+<li>Constructs a <a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZonedDateTime-class.html">ZonedDateTime</a> representation of the input (if applicable).</li>
+<li>Compares it to the current time in that zone.</li>
+<li>Returns <code>true</code> if <code>value.isBefore(now)</code>; otherwise, <code>false</code>.</li>
+</ol>
+<h3 id="design-notes">Design Notes</h3>
+<ul>
+<li>Intended for <strong>historical</strong> or <strong>temporal integrity checks</strong>.</li>
+<li>To validate future timestamps, use <code>`@InFuture`</code> instead.</li>
+<li>Always pair with <code>`@NotNull`</code> if null values are not acceptable.</li>
+<li>Uses <a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZonedDateTime-class.html">ZonedDateTime</a> for accuracy in multi-region deployments.</li>
+</ul>
+<h3 id="example-violation">Example Violation</h3>
+<pre class="language-text"><code class="language-text">Property: occurredOn
+Value: 2035-04-10T00:00:00Z
+Constraint: @InPast
+Message: "Event date must be in the past"
+</code></pre>
+<h3 id="see-also">See Also</h3>
+<ul>
+<li><a href="../../jetleaf_validation/InPast-class.html">InPast</a></li>
+<li><a href="../../jetleaf_validation/InFutureConstraintValidator-class.html">InFutureConstraintValidator</a></li>
+<li><a href="../../jetleaf_validation/WhenValidating-class.html">WhenValidating</a></li>
+<li><a href="../../jetleaf_validation/ValidationContext-class.html">ValidationContext</a></li>
+<li><a href="https://pub.dev/documentation/jetleaf_core/1.0.1/context/AbstractApplicationContext-class.html">AbstractApplicationContext</a></li>
+<li><a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZonedDateTime-class.html">ZonedDateTime</a></li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">const InPastConstraintValidator();</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/InPastConstraintValidator-class.html">InPastConstraintValidator</a></li>
+    <li class="self-crumb">InPastConstraintValidator.new const constructor</li>
+</ol>
+
+    <h5>InPastConstraintValidator class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

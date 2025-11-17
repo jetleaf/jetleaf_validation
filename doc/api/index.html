@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="jetleaf_validation API docs, for the Dart programming language.">
+  <title>jetleaf_validation - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://jetleaf.hapnium.com">jetleaf_validation package</a></li>
+  </ol>
+  <div class="self-name">jetleaf_validation</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="-jetleaf-validation--data-validation--constraints">✅ JetLeaf Validation — Data Validation &amp; Constraints</h1>
+<p><a href="https://pub.dev/packages/jetleaf_validation"><img src="https://img.shields.io/badge/version-1.0.0-blue" alt="pub package"></a>
+<a href="#license"><img src="https://img.shields.io/badge/license-JetLeaf-green" alt="License"></a>
+<a href="https://dart.dev"><img src="https://img.shields.io/badge/sdk-%3E%3D3.9.0-blue" alt="Dart SDK"></a></p>
+<p>Comprehensive data validation framework with declarative constraints and custom validators for JetLeaf applications.</p>
+<h2 id="-overview">📋 Overview</h2>
+<p><code>jetleaf_validation</code> provides robust validation capabilities:</p>
+<ul>
+<li><strong>Declarative Constraints</strong> — Annotations for input validation</li>
+<li><strong>Built-in Validators</strong> — Common validation rules</li>
+<li><strong>Custom Validators</strong> — Domain-specific validation logic</li>
+<li><strong>Validation Groups</strong> — Selective constraint validation</li>
+<li><strong>Nested Validation</strong> — Validate object hierarchies</li>
+<li><strong>Collection Validation</strong> — Validate lists and maps</li>
+<li><strong>Error Messages</strong> — Customizable validation messages</li>
+<li><strong>Pod Integration</strong> — Auto-validate pod properties</li>
+</ul>
+<h2 id="-quick-start">🚀 Quick Start</h2>
+<h3 id="installation">Installation</h3>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  jetleaf_validation:
+    path: ./jetleaf_validation
+</code></pre>
+<h3 id="basic-validation">Basic Validation</h3>
+<pre class="language-dart"><code class="language-dart">import 'package:jetleaf_validation/validation.dart';
+
+class User {
+  @NotNull(message: 'Username cannot be null')
+  @Size(min: 3, max: 20, message: 'Username must be 3-20 characters')
+  late String username;
+
+  @Email(message: 'Invalid email address')
+  late String email;
+
+  @Range(min: 18, max: 120, message: 'Age must be 18-120')
+  late int age;
+}
+
+void main() {
+  final validator = Validator();
+  
+  final user = User();
+  user.username = 'ab';  // Too short
+  user.email = 'invalid-email';
+  user.age = 15;  // Too young
+
+  final violations = validator.validate(user);
+  
+  for (final violation in violations) {
+    print('${violation.propertyPath}: ${violation.message}');
+  }
+  // Output:
+  // username: Username must be 3-20 characters
+  // email: Invalid email address
+  // age: Age must be 18-120
+}
+</code></pre>
+<h2 id="-key-features">📚 Key Features</h2>
+<h3 id="1-built-in-constraints">1. Built-in Constraints</h3>
+<p><strong>Common validation annotations</strong>:</p>
+<pre class="language-dart"><code class="language-dart">class Product {
+  @NotNull()
+  @NotEmpty(message: 'Product name required')
+  String? name;
+
+  @Size(min: 10, max: 500)
+  String? description;
+
+  @Min(value: 0)
+  @Max(value: 100)
+  int discount = 0;
+
+  @Positive(message: 'Price must be positive')
+  double? price;
+
+  @Email()
+  String? contactEmail;
+
+  @Pattern(regex: r'^[A-Z0-9]{10}$', message: 'Invalid product code')
+  String? productCode;
+
+  @NotBlank(message: 'SKU cannot be blank')
+  String? sku;
+}
+
+final validator = Validator();
+final violations = validator.validate(product);
+</code></pre>
+<h3 id="2-custom-validators">2. Custom Validators</h3>
+<p><strong>Domain-specific validation logic</strong>:</p>
+<pre class="language-dart"><code class="language-dart">import 'package:jetleaf_validation/validation.dart';
+
+@Target({TargetKind.field})
+class ValidPhoneNumber extends ConstraintValidator&lt;PhoneNumber, String&gt; {
+  @override
+  bool isValid(String? value, ConstraintValidatorContext context) {
+    if (value == null || value.isEmpty) {
+      return true;  // @NotNull handles nulls
+    }
+
+    final cleaned = value.replaceAll(RegExp('[^0-9]'), '');
+    
+    // Valid if it's 10 digits (after removing non-digits)
+    if (cleaned.length != 10) {
+      context.buildConstraintViolationWithTemplate(
+        'Phone number must be 10 digits'
+      ).addConstraintViolation();
+      return false;
+    }
+    
+    return true;
+  }
+}
+
+@PhoneNumber()
+String userPhone = '(555) 123-4567';
+</code></pre>
+<h3 id="3-validation-groups">3. Validation Groups</h3>
+<p><strong>Selective constraint validation</strong>:</p>
+<pre class="language-dart"><code class="language-dart">class User {
+  @NotNull(groups: [ValidationGroup.CREATE])
+  @Size(min: 3, max: 20)
+  late String username;
+
+  @Email(groups: [ValidationGroup.CREATE, ValidationGroup.UPDATE])
+  late String email;
+
+  @NotNull(groups: [ValidationGroup.UPDATE])
+  late String id;
+}
+
+enum ValidationGroup {
+  CREATE,
+  UPDATE,
+}
+
+// Validate only CREATE constraints
+final violations = validator.validate(user, groups: [ValidationGroup.CREATE]);
+
+// Validate only UPDATE constraints
+final violations = validator.validate(user, groups: [ValidationGroup.UPDATE]);
+</code></pre>
+<h3 id="4-nested-validation">4. Nested Validation</h3>
+<p><strong>Validate object hierarchies</strong>:</p>
+<pre class="language-dart"><code class="language-dart">class Address {
+  @NotNull()
+  @Size(min: 3)
+  late String street;
+
+  @NotNull()
+  late String city;
+
+  @Size(min: 5, max: 10)
+  late String zipCode;
+}
+
+class Person {
+  @NotNull()
+  late String name;
+
+  @Valid()  // Validate nested object
+  late Address address;
+
+  @Valid()  // Validate all items in collection
+  late List&lt;Address&gt; previousAddresses;
+}
+
+final violations = validator.validate(person);
+// Will recursively validate person, address, and previousAddresses
+</code></pre>
+<h3 id="5-collection-validation">5. Collection Validation</h3>
+<p><strong>Validate lists and maps</strong>:</p>
+<pre class="language-dart"><code class="language-dart">class Team {
+  @Size(min: 1, max: 50)
+  List&lt;@NotNull @Valid Member&gt; members = [];
+
+  @NotEmpty(message: 'Must have team lead')
+  Member? teamLead;
+
+  Map&lt;String, @Valid Position&gt; positions = {};
+}
+
+class Member {
+  @NotNull()
+  late String name;
+
+  @Range(min: 0, max: 100)
+  late int experience;
+}
+
+class Position {
+  @NotNull()
+  late String title;
+
+  @Positive()
+  late double salary;
+}
+
+final violations = validator.validate(team);
+</code></pre>
+<h3 id="6-integration-with-pods">6. Integration with Pods</h3>
+<p><strong>Automatic validation in services</strong>:</p>
+<pre class="language-dart"><code class="language-dart">@Service()
+class UserService {
+  final Validator _validator;
+
+  @Autowired
+  UserService(this._validator);
+
+  Future&lt;void&gt; createUser(User user) async {
+    // Validate before processing
+    final violations = _validator.validate(user, groups: [ValidationGroup.CREATE]);
+    
+    if (violations.isNotEmpty) {
+      throw ValidationException(violations);
+    }
+
+    // Process user
+    await _userRepository.save(user);
+  }
+}
+</code></pre>
+<h3 id="7-rest-controller-integration">7. REST Controller Integration</h3>
+<p><strong>Validate request bodies</strong>:</p>
+<pre class="language-dart"><code class="language-dart">@RestController('/api/users')
+class UserController {
+  final UserService _service;
+  final Validator _validator;
+
+  @Autowired
+  UserController(this._service, this._validator);
+
+  @PostMapping('/')
+  Future&lt;HttpResponse&gt; createUser(
+    @RequestBody User user,
+  ) async {
+    // Validate input
+    final violations = _validator.validate(user, groups: [ValidationGroup.CREATE]);
+    
+    if (violations.isNotEmpty) {
+      return HttpResponse.badRequest({
+        'error': 'Validation failed',
+        'violations': violations.map((v) =&gt; {
+          'field': v.propertyPath,
+          'message': v.message,
+        }).toList(),
+      });
+    }
+
+    await _service.createUser(user);
+    return HttpResponse.created(user);
+  }
+}
+</code></pre>
+<h2 id="-built-in-constraints">📖 Built-in Constraints</h2>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Target</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@NotNull</code></td>
+<td>Any</td>
+<td>Value cannot be null</td>
+</tr>
+<tr>
+<td><code>@NotEmpty</code></td>
+<td>Collections, String</td>
+<td>Value cannot be empty</td>
+</tr>
+<tr>
+<td><code>@NotBlank</code></td>
+<td>String</td>
+<td>String cannot be blank</td>
+</tr>
+<tr>
+<td><code>@Size(min, max)</code></td>
+<td>Collections, String</td>
+<td>Size constraints</td>
+</tr>
+<tr>
+<td><code>@Min(value)</code></td>
+<td>Number</td>
+<td>Minimum value</td>
+</tr>
+<tr>
+<td><code>@Max(value)</code></td>
+<td>Number</td>
+<td>Maximum value</td>
+</tr>
+<tr>
+<td><code>@Range(min, max)</code></td>
+<td>Number</td>
+<td>Range constraints</td>
+</tr>
+<tr>
+<td><code>@Positive</code></td>
+<td>Number</td>
+<td>Must be &gt; 0</td>
+</tr>
+<tr>
+<td><code>@Negative</code></td>
+<td>Number</td>
+<td>Must be &lt; 0</td>
+</tr>
+<tr>
+<td><code>@Email</code></td>
+<td>String</td>
+<td>Valid email format</td>
+</tr>
+<tr>
+<td><code>@Pattern(regex)</code></td>
+<td>String</td>
+<td>Regex pattern match</td>
+</tr>
+<tr>
+<td><code>@Valid</code></td>
+<td>Object</td>
+<td>Nested validation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-common-patterns">🎯 Common Patterns</h2>
+<h3 id="pattern-1-form-validation">Pattern 1: Form Validation</h3>
+<pre class="language-dart"><code class="language-dart">class RegistrationForm {
+  @NotNull()
+  @Size(min: 3, max: 20)
+  late String username;
+
+  @NotNull()
+  @Email()
+  late String email;
+
+  @NotNull()
+  @Size(min: 8, message: 'Password must be at least 8 characters')
+  late String password;
+
+  @NotNull()
+  @AssertTrue(message: 'Must agree to terms')
+  late bool agreedToTerms;
+}
+
+@RestController('/auth')
+class AuthController {
+  final Validator _validator;
+
+  @PostMapping('/register')
+  Future&lt;HttpResponse&gt; register(@RequestBody RegistrationForm form) async {
+    final violations = _validator.validate(form);
+    if (violations.isNotEmpty) {
+      return HttpResponse.badRequest({
+        'errors': violations.map((v) =&gt; v.message).toList(),
+      });
+    }
+
+    // Proceed with registration
+    return HttpResponse.ok({'status': 'registered'});
+  }
+}
+</code></pre>
+<h3 id="pattern-2-business-rule-validation">Pattern 2: Business Rule Validation</h3>
+<pre class="language-dart"><code class="language-dart">class Order {
+  @NotNull()
+  late String customerId;
+
+  @NotEmpty(message: 'Order must have items')
+  late List&lt;OrderItem&gt; items;
+
+  @Range(min: 0)
+  late double totalAmount;
+
+  @AssertTrue(message: 'Total must match item sum')
+  bool isTotalCorrect() {
+    final sum = items.fold&lt;double&gt;(
+      0,
+      (sum, item) =&gt; sum + item.price,
+    );
+    return (sum - totalAmount).abs() &lt; 0.01;
+  }
+}
+</code></pre>
+<h2 id="-common-issues">⚠️ Common Issues</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Validation not running</td>
+<td>Validator not called</td>
+<td>Explicitly call <code>validator.validate()</code></td>
+</tr>
+<tr>
+<td>Nested validation skipped</td>
+<td>Missing <code>@Valid</code></td>
+<td>Add <code>@Valid</code> annotation to nested objects</td>
+</tr>
+<tr>
+<td>Custom validator not used</td>
+<td>Not registered</td>
+<td>Register with validator factory</td>
+</tr>
+<tr>
+<td>Message not customized</td>
+<td>Default message used</td>
+<td>Add <code>message</code> parameter to constraint</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-best-practices">📋 Best Practices</h2>
+<h3 id="-do">✅ DO</h3>
+<ul>
+<li>Define validation constraints close to fields</li>
+<li>Use validation groups for different operations</li>
+<li>Provide meaningful error messages</li>
+<li>Validate early in request processing</li>
+<li>Test validators independently</li>
+<li>Use <code>@Valid</code> for nested objects</li>
+<li>Create custom validators for business rules</li>
+</ul>
+<h3 id="-dont">❌ DON'T</h3>
+<ul>
+<li>Perform heavy validation in constructors</li>
+<li>Mix validation with business logic</li>
+<li>Ignore validation violations</li>
+<li>Create overly complex validators</li>
+<li>Share validator instances unsafely</li>
+<li>Forget to validate nested collections</li>
+</ul>
+<h2 id="-dependencies">📦 Dependencies</h2>
+<ul>
+<li><strong><code>jetleaf_lang</code></strong> — Language utilities</li>
+<li><strong><code>jetleaf_logging</code></strong> — Structured logging</li>
+<li><strong><code>jetleaf_pod</code></strong> — Pod lifecycle</li>
+<li><strong><code>jetleaf_core</code></strong> — Core framework</li>
+<li><strong><code>jetleaf_env</code></strong> — Environment configuration</li>
+</ul>
+<h2 id="-license">📄 License</h2>
+<p>This package is part of the JetLeaf Framework. See LICENSE in the root directory.</p>
+<h2 id="-related-packages">🔗 Related Packages</h2>
+<ul>
+<li><strong><code>jetleaf_core</code></strong> — Framework integration</li>
+<li><strong><code>jetleaf_web</code></strong> — HTTP request validation</li>
+<li><strong><code>jetson</code></strong> — JSON validation</li>
+</ul>
+<h2 id="-support">📞 Support</h2>
+<p>For issues, questions, or contributions, visit:</p>
+<ul>
+<li><a href="https://github.com/jetleaf/jetleaf_validation/issues">GitHub Issues</a></li>
+<li><a href="https://jetleaf.hapnium.com/docs/validation">Documentation</a></li>
+<li><a href="https://forum.jetleaf.hapnium.com">Community Forum</a></li>
+</ul>
+<hr>
+<p><strong>Created with ❤️ by <a href="https://hapnium.com">Hapnium</a></strong></p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <h3>JetLeaf Validation</h3>
+            <dt id="jetleaf_validation">
+  <span class="name"><a href="jetleaf_validation/">jetleaf_validation</a></span> 
+
+</dt>
+<dd>JetLeaf Validation Library 🍃
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://jetleaf.hapnium.com">jetleaf_validation package</a></li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">jetleaf_validation</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li class="section-subtitle">JetLeaf Validation</li>
+        <li class="section-subitem"><a href="jetleaf_validation/">jetleaf_validation</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the InFutureConstraintValidator class from the jetleaf_validation library, for the Dart programming language.">
+  <title>InFutureConstraintValidator class - jetleaf_validation library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">jetleaf_validation</a></li>
+    <li><a href="../jetleaf_validation/">jetleaf_validation.dart</a></li>
+    <li class="self-crumb">InFutureConstraintValidator class</li>
+  </ol>
+  <div class="self-name">InFutureConstraintValidator</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="jetleaf_validation&#47;jetleaf_validation-library-sidebar.html"
+    data-below-sidebar="jetleaf_validation&#47;InFutureConstraintValidator-class-sidebar.html">
+    <div>
+<h1><span class="kind-class">InFutureConstraintValidator</span> class 
+    <a href="https://dart.dev/language/class-modifiers#final" class="feature feature-final" title="This class can neither be extended, implemented, nor mixed in.">final</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>A <a href="../jetleaf_validation/ConstraintValidator-class.html">ConstraintValidator</a> implementation that validates whether a given
+<a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime-class.html">DateTime</a> value represents a <strong>future point in time</strong> relative to the
+current moment.</p>
+<p>This validator supports timezone-aware comparisons through the
+JetLeaf <a href="https://pub.dev/documentation/jetleaf_env/1.0.1/env/Environment-class.html">Environment</a> and the <a href="https://pub.dev/documentation/jetleaf_core/1.0.1/context/AbstractApplicationContext/APPLICATION_TIMEZONE.html">AbstractApplicationContext.APPLICATION_TIMEZONE</a> property,
+ensuring consistent validation behavior across distributed nodes
+and environments.</p>
+<h3 id="validation-logic">Validation Logic</h3>
+<p>The constraint passes if:</p>
+<ul>
+<li>The value is <code>null</code> (null values are considered valid unless
+otherwise constrained by additional annotations such as <code>@NotNull</code>).</li>
+<li>The provided <a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime-class.html">DateTime</a> occurs <strong>after</strong> the current time, either in
+the system’s local timezone or a configured application timezone.</li>
+</ul>
+<h3 id="timezone-behavior">Timezone Behavior</h3>
+<p>If the environment defines:</p>
+<pre class="language-text"><code class="language-text">application.timezone = "UTC"
+</code></pre>
+<p>the validator converts both the provided value and the current time
+to the specified <a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZoneId-class.html">ZoneId</a> before performing comparison.</p>
+<p>This enables globally consistent validation in multi-region or
+multi-service deployments where time offsets can otherwise cause
+inconsistent results.</p>
+<h3 id="example">Example</h3>
+<pre class="language-dart"><code class="language-dart">@InFuture()
+final DateTime bookingDate;
+
+// Assuming now = 2025-10-21T10:00:00Z
+bookingDate = DateTime.utc(2025, 10, 21, 12); // ✅ Valid
+bookingDate = DateTime.utc(2025, 10, 21, 8);  // ❌ Invalid
+</code></pre>
+<h3 id="integration-details">Integration Details</h3>
+<ul>
+<li>The validator retrieves the application timezone from
+the <a href="../jetleaf_validation/ValidationContext-class.html">ValidationContext</a>'s <a href="https://pub.dev/documentation/jetleaf_env/1.0.1/env/Environment-class.html">Environment</a> via:
+<pre class="language-dart"><code class="language-dart">final zone = env.getProperty(AbstractApplicationContext.APPLICATION_TIMEZONE);
+</code></pre>
+</li>
+<li>If the property exists, time comparison is delegated to
+<a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZonedDateTime-class.html">ZonedDateTime</a> via JetLeaf’s temporal abstraction layer.</li>
+<li>Otherwise, falls back to system-local <a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime/DateTime.now.html">DateTime.now()</a>.</li>
+</ul>
+<h3 id="typical-use-cases">Typical Use Cases</h3>
+<ul>
+<li>Validating <strong>future reservation dates</strong> or <strong>deadlines</strong>.</li>
+<li>Ensuring <strong>token expirations</strong> or <strong>schedules</strong> have not yet passed.</li>
+<li>Validating <strong>release times</strong> for delayed execution.</li>
+</ul>
+<h3 id="related-constraints">Related Constraints</h3>
+<ul>
+<li><a href="../jetleaf_validation/InPast-class.html">InPast</a> — validates that a date is before the current time.</li>
+<li><a href="../jetleaf_validation/NotNull-class.html">NotNull</a> — ensures the target value is not null before
+applying temporal constraints.</li>
+<li><a href="../jetleaf_validation/Size-class.html">Size</a> — checks that a date or numeric value falls within
+a specified range.</li>
+</ul>
+<h3 id="see-also">See Also</h3>
+<ul>
+<li><a href="../jetleaf_validation/ConstraintValidator-class.html">ConstraintValidator</a></li>
+<li><a href="../jetleaf_validation/ValidationContext-class.html">ValidationContext</a></li>
+<li><a href="https://pub.dev/documentation/jetleaf_env/1.0.1/env/Environment-class.html">Environment</a></li>
+<li><a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZoneId-class.html">ZoneId</a></li>
+<li><a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ZonedDateTime-class.html">ZonedDateTime</a></li>
+</ul>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+
+        
+  <dt>Implemented types</dt>
+  <dd>
+    <ul class="comma-separated clazz-relationships">
+        <li><a href="../jetleaf_validation/ConstraintValidator-class.html">ConstraintValidator</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../jetleaf_validation/InFuture-class.html">InFuture</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime-class.html">DateTime</a></span>&gt;</span></li>
+    </ul>
+  </dd>
+        
+
+
+        
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+    <dl class="constructor-summary-list">
+        <dt id="InFutureConstraintValidator.new" class="callable">
+          <span class="name"><a href="../jetleaf_validation/InFutureConstraintValidator/InFutureConstraintValidator.html">InFutureConstraintValidator.new</a></span><span class="signature">()</span>
+        </dt>
+        <dd>
+          Creates a new timezone-aware <a href="../jetleaf_validation/InFutureConstraintValidator-class.html">InFutureConstraintValidator</a>.
+            <div class="constructor-modifier features">const</div>
+        </dd>
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.9.2/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.9.2/dart-core/Type-class.html">Type</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="isValid" class="callable">
+  <span class="name"><a href="../jetleaf_validation/InFutureConstraintValidator/isValid.html">isValid</a></span><span class="signature">(<wbr><span class="parameter" id="isValid-param-value"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.2/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">value</span>, </span><span class="parameter" id="isValid-param-annotation"><span class="type-annotation"><a href="../jetleaf_validation/InFuture-class.html">InFuture</a></span> <span class="parameter-name">annotation</span>, </span><span class="parameter" id="isValid-param-context"><span class="type-annotation"><a href="../jetleaf_validation/ValidationContext-class.html">ValidationContext</a></span> <span class="parameter-name">context</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Evaluates whether <code>value</code> satisfies the constraint defined by <code>annotation</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a nonexistent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.9.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">jetleaf_validation</a></li>
+    <li><a href="../jetleaf_validation/">jetleaf_validation</a></li>
+    <li class="self-crumb">InFutureConstraintValidator class</li>
+</ol>
+
+    <h5>jetleaf_validation library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

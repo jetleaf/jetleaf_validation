@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the findAllConstraints method from the AbstractExecutableValidator class, for the Dart programming language.">
+  <title>findAllConstraints method - AbstractExecutableValidator class - jetleaf_validation library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation.dart</a></li>
+    <li><a href="../../jetleaf_validation/AbstractExecutableValidator-class.html">AbstractExecutableValidator</a></li>
+    <li class="self-crumb">findAllConstraints method</li>
+  </ol>
+  <div class="self-name">findAllConstraints</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="jetleaf_validation&#47;AbstractExecutableValidator-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">findAllConstraints</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.dart.dev/stable/3.9.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter">_ConstraintMatch</span>&gt;</span></span>
+<span class="name ">findAllConstraints</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="findAllConstraints-param-source"><span class="type-annotation"><a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/Source-class.html">Source</a></span> <span class="parameter-name">source</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Finds all constraints associated with a given <code>source</code>.</p>
+<p>This method inspects the annotations on the <code>source</code> recursively,
+collecting all annotations that are assignable to <a href="../../jetleaf_validation/Constraint-class.html">Constraint</a>. For
+annotations that themselves extend <a href="../../jetleaf_validation/WhenValidating-class.html">WhenValidating</a>, it processes
+their nested annotations recursively.</p>
+<p>Each match is returned as a <code>_ConstraintMatch</code> (<code>MapEntry&lt;Annotation, dynamic&gt;</code>),
+where the key is the <strong>original annotation</strong> and the value is the
+associated validators (from <code>Constraint.FIELD_KEY</code>).</p>
+<p>Reflection errors are silently ignored during traversal.</p>
+<p>Example:</p>
+<pre class="language-dart"><code class="language-dart">final constraints = findAllConstraints(source);
+for (final match in constraints) {
+  final annotation = match.key;
+  final validators = match.value;
+}
+</code></pre>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">List&lt;_ConstraintMatch&gt; findAllConstraints(Source source) {
+  final matches = &lt;_ConstraintMatch&gt;[];
+  final constraint = Class&lt;Constraint&gt;(null, PackageNames.VALIDATION);
+  final whenValidating = Class&lt;WhenValidating&gt;(null, PackageNames.VALIDATION);
+
+  void processAnnotation(Annotation ann) {
+    final annClass = ann.getClass();
+
+    &#47;&#47; Go through all annotations *on the annotation class*
+    for (final meta in annClass.getAllAnnotations()) {
+      try {
+        final metaClass = meta.getClass();
+
+        &#47;&#47; If the annotation on the annotation class is a Constraint, extract it
+        if (constraint.isAssignableFrom(metaClass)) {
+          final whenValidatingInstance = ann.getInstance();
+          final instance = meta.getInstance();
+
+          if (whenValidatingInstance is WhenValidating &amp;&amp; instance is Constraint) {
+            matches.add(MapEntry(whenValidatingInstance, MapEntry(meta, instance.validators)));
+          }
+        }
+
+        &#47;&#47; If the annotation class itself is annotated with @WhenValidating, recurse
+        if (whenValidating.isAssignableFrom(metaClass)) {
+          processAnnotation(meta);
+        }
+      } catch (e) {
+        &#47;&#47; ignore reflection failures
+      }
+    }
+  }
+
+  &#47;&#47; Start with all annotations directly on the target source (method param, field, etc.)
+  for (final ann in source.getAllDirectAnnotations()) {
+    try {
+      final annClass = ann.getClass();
+
+      &#47;&#47; If it&#39;s a WhenValidating annotation (like @Email, @InFuture, etc.)
+      if (whenValidating.isAssignableFrom(annClass)) {
+        processAnnotation(ann);
+      }
+
+      &#47;&#47; If the annotation itself is @Constraint directly
+      if (constraint.isAssignableFrom(annClass)) {
+        final whenValidatingInstance = ann.getInstance();
+        final keyValue = ann.getFieldValue(Constraint.FIELD_KEY);
+
+        if (whenValidatingInstance is WhenValidating) {
+          matches.add(MapEntry(whenValidatingInstance, MapEntry(ann, keyValue)));
+        }
+      }
+    } catch (_) {}
+  }
+
+  return matches;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/AbstractExecutableValidator-class.html">AbstractExecutableValidator</a></li>
+    <li class="self-crumb">findAllConstraints method</li>
+</ol>
+
+    <h5>AbstractExecutableValidator class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

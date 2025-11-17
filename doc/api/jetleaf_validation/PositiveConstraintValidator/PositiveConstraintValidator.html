@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the PositiveConstraintValidator.new constructor from Class PositiveConstraintValidator from the jetleaf_validation library, for the Dart programming language.">
+  <title>PositiveConstraintValidator.new constructor - PositiveConstraintValidator - jetleaf_validation library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation.dart</a></li>
+    <li><a href="../../jetleaf_validation/PositiveConstraintValidator-class.html">PositiveConstraintValidator</a></li>
+    <li class="self-crumb">PositiveConstraintValidator.new const constructor</li>
+  </ol>
+  <div class="self-name">PositiveConstraintValidator.new</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="jetleaf_validation&#47;PositiveConstraintValidator-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-constructor">PositiveConstraintValidator</span> constructor 
+</h1></div>
+
+    <section class="multi-line-signature">
+      const
+      <span class="name ">PositiveConstraintValidator</span>(<wbr>)
+    </section>
+    
+<section class="desc markdown">
+  <p>A <strong>JetLeaf constraint validator</strong> that ensures a numeric value
+is <strong>strictly greater than zero</strong>, as defined by the <code>`@Positive`</code> annotation.</p>
+<p>This validator is used to enforce <strong>positivity constraints</strong> on numeric
+fields, parameters, or computed values, helping ensure correctness in
+domains such as finance, inventory, resource quotas, and measurement systems.</p>
+<h3 id="validation-rules">Validation Rules</h3>
+<ul>
+<li>Validation <strong>passes</strong> if the value is <code>null</code>.<br>
+(This allows composability with <code>`@NotNull`</code> when non-null enforcement is needed.)</li>
+<li>Validation <strong>passes</strong> if the numeric value <code>&gt;</code> <code>0</code>.</li>
+<li>Validation <strong>fails</strong> if the value is <code>≤ 0</code> (including negative numbers and zero).</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre class="language-dart"><code class="language-dart">@Target({TargetKind.fieldType})
+@Validator(PositiveConstraintValidator())
+final class Positive extends WhenValidating {
+  const Positive({super.message = "Value must be positive"});
+}
+
+class Payment {
+  @Positive(message: "Amount must be greater than zero")
+  final double amount;
+
+  const Payment(this.amount);
+}
+</code></pre>
+<h3 id="example-validation">Example Validation</h3>
+<table>
+<thead>
+<tr>
+<th>Input Value</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>42</code></td>
+<td>✅ Pass</td>
+</tr>
+<tr>
+<td><code>0</code></td>
+<td>❌ Fail</td>
+</tr>
+<tr>
+<td><code>-10</code></td>
+<td>❌ Fail</td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>✅ Pass</td>
+</tr>
+</tbody>
+</table>
+<h3 id="behavior-notes">Behavior Notes</h3>
+<ul>
+<li>Only enforces <strong>strict positivity</strong>; use <code>`@PositiveOrZero`</code> if zero should be accepted.</li>
+<li>Applies to all <a href="https://api.dart.dev/stable/3.9.2/dart-core/num-class.html">num</a> subtypes (<code>int</code>, <code>double</code>, <code>Decimal</code>, etc.).</li>
+<li>To reject <code>null</code> values, pair with <code>`@NotNull`</code>.</li>
+<li>Floating-point precision is preserved through native numeric comparison.</li>
+<li>Can be applied at both <strong>field</strong> and <strong>parameter</strong> levels.</li>
+</ul>
+<h3 id="example-violation">Example Violation</h3>
+<pre class="language-text"><code class="language-text">Property: amount
+Value: 0
+Constraint: @Positive
+Message: "Amount must be greater than zero"
+</code></pre>
+<h3 id="design-notes">Design Notes</h3>
+<ul>
+<li>Ideal for <strong>financial</strong>, <strong>inventory</strong>, and <strong>validation-layer</strong> checks.</li>
+<li>Lightweight, side-effect-free, and suitable for synchronous or batch validation.</li>
+<li>Serves as a building block for more complex domain constraints
+(e.g., <code>@PositiveBalance</code>, <code>@PositivePrice</code>).</li>
+</ul>
+<h3 id="see-also">See Also</h3>
+<ul>
+<li><a href="../../jetleaf_validation/Positive-class.html">Positive</a></li>
+<li><code>PositiveOrZeroConstraintValidator</code></li>
+<li><a href="../../jetleaf_validation/NotNullConstraintValidator-class.html">NotNullConstraintValidator</a></li>
+<li><a href="../../jetleaf_validation/WhenValidating-class.html">WhenValidating</a></li>
+<li><a href="../../jetleaf_validation/ValidationContext-class.html">ValidationContext</a></li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">const PositiveConstraintValidator();</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/PositiveConstraintValidator-class.html">PositiveConstraintValidator</a></li>
+    <li class="self-crumb">PositiveConstraintValidator.new const constructor</li>
+</ol>
+
+    <h5>PositiveConstraintValidator class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

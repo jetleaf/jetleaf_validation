@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the MaxConstraintValidator.new constructor from Class MaxConstraintValidator from the jetleaf_validation library, for the Dart programming language.">
+  <title>MaxConstraintValidator.new constructor - MaxConstraintValidator - jetleaf_validation library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation.dart</a></li>
+    <li><a href="../../jetleaf_validation/MaxConstraintValidator-class.html">MaxConstraintValidator</a></li>
+    <li class="self-crumb">MaxConstraintValidator.new const constructor</li>
+  </ol>
+  <div class="self-name">MaxConstraintValidator.new</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="jetleaf_validation&#47;MaxConstraintValidator-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-constructor">MaxConstraintValidator</span> constructor 
+</h1></div>
+
+    <section class="multi-line-signature">
+      const
+      <span class="name ">MaxConstraintValidator</span>(<wbr>)
+    </section>
+    
+<section class="desc markdown">
+  <p>A built-in <strong>JetLeaf constraint validator</strong> that enforces
+upper-bound numerical limits defined by the <code>`@Max`</code> annotation.</p>
+<p>This validator ensures that a numeric value (integer, double, or decimal)
+does not exceed a specified maximum threshold. It is commonly used in
+data validation scenarios such as enforcing maximum quantities,
+rating limits, or percentage caps.</p>
+<h3 id="validation-rules">Validation Rules</h3>
+<ul>
+<li>If the annotated value is <code>null</code>, validation passes automatically.
+(Use <code>@NotNull</code> or related constraints to enforce presence.)</li>
+<li>Validation succeeds when:
+<pre class="language-text"><code class="language-text">value ≤ max
+</code></pre>
+</li>
+<li>Validation fails when the provided value is greater than <code>max</code>.</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre class="language-dart"><code class="language-dart">@Target({TargetKind.fieldType})
+@Constraint(MaxConstraintValidator())
+final class Max extends WhenValidating {
+  final num value;
+
+  const Max(this.value, {super.message = "Value exceeds maximum limit"});
+}
+
+class Product {
+  @Max(100, message: "Discount cannot exceed 100%")
+  final num discount;
+
+  Product(this.discount);
+}
+</code></pre>
+<h3 id="execution-flow">Execution Flow</h3>
+<p>When a property annotated with <code>@Max</code> is validated:</p>
+<ol>
+<li>JetLeaf’s validation framework detects the <code>@Max</code> constraint.</li>
+<li>It retrieves this <a href="../../jetleaf_validation/MaxConstraintValidator-class.html">MaxConstraintValidator</a>.</li>
+<li>The validator compares the field’s numeric value to the defined <code>max</code>.</li>
+<li>If the value is greater than the maximum, a violation is recorded
+in the <a href="../../jetleaf_validation/ValidationContext-class.html">ValidationContext</a>.</li>
+</ol>
+<h3 id="example-violation">Example Violation</h3>
+<pre class="language-text"><code class="language-text">Property: discount
+Value: 120
+Constraint: @Max(100)
+Message: "Discount cannot exceed 100%"
+</code></pre>
+<h3 id="see-also">See Also</h3>
+<ul>
+<li><a href="../../jetleaf_validation/Max-class.html">Max</a></li>
+<li><a href="../../jetleaf_validation/MinConstraintValidator-class.html">MinConstraintValidator</a></li>
+<li><a href="../../jetleaf_validation/ConstraintValidator-class.html">ConstraintValidator</a></li>
+<li><a href="../../jetleaf_validation/WhenValidating-class.html">WhenValidating</a></li>
+<li><a href="../../jetleaf_validation/ValidationContext-class.html">ValidationContext</a></li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">const MaxConstraintValidator();</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/MaxConstraintValidator-class.html">MaxConstraintValidator</a></li>
+    <li class="self-crumb">MaxConstraintValidator.new const constructor</li>
+</ol>
+
+    <h5>MaxConstraintValidator class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

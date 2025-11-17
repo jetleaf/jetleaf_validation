@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the Valid.new constructor from Class Valid from the jetleaf_validation library, for the Dart programming language.">
+  <title>Valid.new constructor - Valid - jetleaf_validation library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation.dart</a></li>
+    <li><a href="../../jetleaf_validation/Valid-class.html">Valid</a></li>
+    <li class="self-crumb">Valid.new const constructor</li>
+  </ol>
+  <div class="self-name">Valid.new</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="jetleaf_validation&#47;Valid-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-constructor">Valid</span> constructor 
+</h1></div>
+
+    <section class="multi-line-signature">
+      const
+      <span class="name ">Valid</span>(<wbr>[<ol class="parameter-list single-line"> <li><span class="parameter" id="-param-groups"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.9.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/jetleaf_lang/1.0.1/lang/ClassType-class.html">ClassType</a></span>&gt;</span></span> <span class="parameter-name">groups</span> = <span class="default-value">const []</span></span></li>
+</ol>])
+    </section>
+    
+<section class="desc markdown">
+  <p>Marks a <strong>field</strong> for recursive validation.</p>
+<p>When a field is annotated with <code>@Valid</code>, the JetLeaf validation subsystem
+will recursively validate the object assigned to that field, applying
+all constraints present on the target object's class.</p>
+<h3 id="features">Features</h3>
+<ul>
+<li>Can be applied only to <strong>fields</strong> (<code>TargetKind.field</code>).</li>
+<li>Supports <strong>validation groups</strong> to selectively trigger validation on
+specific constraint groups.</li>
+<li>Enables <strong>nested validation</strong>, useful for DTOs, entities, or complex types.</li>
+</ul>
+<h3 id="example">Example</h3>
+<pre class="language-dart"><code class="language-dart">class Address {
+  @NotBlank()
+  final String street;
+
+  @NotBlank()
+  final String city;
+
+  const Address(this.street, this.city);
+}
+
+class User {
+  @NotBlank()
+  final String name;
+
+  @Valid()
+  final Address address;
+
+  const User(this.name, this.address);
+}
+
+// When validating a User instance, the Address fields are validated automatically.
+</code></pre>
+<h3 id="groups">Groups</h3>
+<p>You can restrict validation to specific groups by passing a list of classes:</p>
+<pre class="language-dart"><code class="language-dart">@Valid([ClassType&lt;AdminGroup&gt;(), ClassType&lt;AuditGroup&gt;()])
+final Address address;
+</code></pre>
+<p>This ensures that only constraints belonging to these groups are validated.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">const Valid([this.groups = const []]);</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/">jetleaf_validation</a></li>
+    <li><a href="../../jetleaf_validation/Valid-class.html">Valid</a></li>
+    <li class="self-crumb">Valid.new const constructor</li>
+</ol>
+
+    <h5>Valid class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    jetleaf_validation
+      1.0.0
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
