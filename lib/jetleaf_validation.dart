@@ -12,44 +12,59 @@
 // 
 // 🔧 Powered by Hapnium — the Dart backend engine 🍃
 
-/// JetLeaf Validation Library 🍃
+/// ✅ **JetLeaf Validation Library**
 ///
-/// Provides the core validation framework for JetLeaf, enabling declarative,
-/// annotation-driven constraint validation for fields, methods, and parameters.
+/// This library provides a comprehensive framework for validating data,
+/// method inputs, and application state in JetLeaf applications. It includes:
+/// - declarative validation via annotations  
+/// - reusable constraint validators  
+/// - validation factories and executors  
+/// - exception handling for validation failures  
+/// - auto-configuration for seamless integration
 ///
-/// This library integrates reflective metadata inspection, group-based validation,
-/// and extensible constraint resolution via `@Constraint` and `@Validated`
-/// annotations.
 ///
-/// ### Key Features
-/// - Declarative constraints using `@Constraint` annotations.
-/// - Group-based validation via `@Validated` and `@Valid`.
-/// - Built-in constraint validators (e.g. `@Size`, `@NotNull`, etc.).
-/// - Reflection-backed validation context for runtime metadata access.
-/// - Extensible factory configuration and auto-discovery.
+/// ## 🔑 Key Concepts
 ///
-/// ### Exports
-/// - `annotations.dart` — Core validation annotations.
-/// - `abstract_executable_validator.dart` — Base executable validator contract.
-/// - `base.dart` — Shared validation utilities and foundational types.
-/// - `constraint_validators.dart` — Built-in constraint validator implementations.
-/// - `exceptions.dart` — Validation and constraint-related exception types.
-/// - `validation_auto_configuration.dart` — Bootstrapping and auto-registration logic.
-/// - `validation_factory.dart` — Main entry point for obtaining configured validators.
+/// ### 📝 Annotations
+/// - `annotations.dart` — provides declarative validation annotations
+///   such as `@NotNull`, `@Min`, `@Max`, and custom constraints.
 ///
-/// ### Example
+///
+/// ### ⚙ Core Validation Infrastructure
+/// - `AbstractExecutableValidator` — base class for validators that can
+///   execute validation logic against methods or parameters  
+/// - `ValidationFactory` — factory for creating validator instances  
+/// - `ValidationAutoConfiguration` — sets up default validation beans
+///
+///
+/// ### 🧱 Base Utilities
+/// - `base.dart` — foundational classes and helpers for validation operations  
+/// - `constraint_validators.dart` — built-in reusable constraint implementations
+///
+///
+/// ### ⚠ Exception Handling
+/// - `exceptions.dart` — contains framework exceptions for validation
+///   failures and illegal operations
+///
+///
+/// ## 🎯 Intended Usage
+///
+/// Import this library to add validation support to your application:
 /// ```dart
 /// import 'package:jetleaf_validation/jetleaf_validation.dart';
 ///
-/// final validator = ValidationFactory.create();
-/// final report = validator.validate(user);
+/// @NotNull
+/// String username;
 ///
-/// if (!report.isValid) {
-///   report.violations.forEach(print);
-/// }
+/// final factory = ValidationFactory();
+/// factory.validate(user);
 /// ```
 ///
-/// {@category JetLeaf Validation}
+/// Supports annotation-driven validation, programmatic validation, and
+/// custom constraint validators.
+///
+///
+/// © 2025 Hapnium & JetLeaf Contributors
 library;
 
 export 'src/annotations.dart';

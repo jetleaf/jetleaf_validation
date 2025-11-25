@@ -25,8 +25,7 @@ Comprehensive data validation framework with declarative constraints and custom 
 
 ```yaml
 dependencies:
-  jetleaf_validation:
-    path: ./jetleaf_validation
+  jetleaf_validation: ^1.0.0
 ```
 
 ### Basic Validation

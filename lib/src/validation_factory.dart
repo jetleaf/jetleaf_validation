@@ -14,6 +14,7 @@
 
 import 'dart:async';
 
+import 'package:jetleaf_core/annotation.dart';
 import 'package:jetleaf_core/context.dart';
 import 'package:jetleaf_core/core.dart';
 import 'package:jetleaf_core/intercept.dart';
@@ -108,6 +109,7 @@ import 'exceptions.dart';
 /// - [Environment]
 /// - [MethodInterceptor]
 /// {@endtemplate}
+@Order(2)
 final class ValidationFactory extends AbstractExecutableValidator implements Validator, MethodInterceptor, MethodBeforeInterceptor, AfterReturningInterceptor, ApplicationContextAware {
   /// The **active JetLeaf [ApplicationContext]** associated with this registrar.
   ///
