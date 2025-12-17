@@ -12,7 +12,6 @@
 // 
 // 🔧 Powered by Hapnium — the Dart backend engine 🍃
 
-import 'package:jetleaf_core/intercept.dart';
 import 'package:jetleaf_env/env.dart';
 import 'package:jetleaf_lang/lang.dart';
 import 'package:jetleaf_logging/logging.dart';
@@ -278,12 +277,12 @@ abstract class AbstractExecutableValidator implements ExecutableValidator, Valid
     final whenValidating = Class<WhenValidating>(null, PackageNames.VALIDATION);
 
     void processAnnotation(Annotation ann) {
-      final annClass = ann.getClass();
+      final annClass = ann.getDeclaringClass();
 
       // Go through all annotations *on the annotation class*
       for (final meta in annClass.getAllAnnotations()) {
         try {
-          final metaClass = meta.getClass();
+          final metaClass = meta.getDeclaringClass();
 
           // If the annotation on the annotation class is a Constraint, extract it
           if (constraint.isAssignableFrom(metaClass)) {
@@ -308,7 +307,7 @@ abstract class AbstractExecutableValidator implements ExecutableValidator, Valid
     // Start with all annotations directly on the target source (method param, field, etc.)
     for (final ann in source.getAllDirectAnnotations()) {
       try {
-        final annClass = ann.getClass();
+        final annClass = ann.getDeclaringClass();
 
         // If it's a WhenValidating annotation (like @Email, @InFuture, etc.)
         if (whenValidating.isAssignableFrom(annClass)) {
@@ -423,10 +422,10 @@ abstract class AbstractExecutableValidator implements ExecutableValidator, Valid
   bool hasValidatedAnnotation(Source source) => source.getAllDirectAnnotations().any((a) => a.matches<Validated>());
 
   @override
-  ValidationReport validateParameters(Object target, Method method, [MethodArgument? arguments, Set<Class>? groups]) {
+  ValidationReport validateParameters(Object target, Method method, [ExecutableArgument? arguments, Set<Class>? groups]) {
     final violations = <ConstraintViolation>{};
     final context = createContext();
-    final argument = arguments ?? MethodArguments();
+    final argument = arguments ?? ExecutableArgument.none();
     final paramsToValidate = method.getParameters().where(hasConstraint).toList();
 
     for (final param in paramsToValidate) {
@@ -436,8 +435,8 @@ abstract class AbstractExecutableValidator implements ExecutableValidator, Valid
             ? argument.getNamedArguments()[param.getName()]
             : argument.getPositionalArguments().elementAtOrNull(param.getIndex());
         
-        if (hasConstraint(param.getClass()) && hasValidatedAnnotation(param) && value != null) {
-          final report = validate(value, param.getClass(), activeGroups);
+        if (hasConstraint(param.getReturnClass()) && hasValidatedAnnotation(param) && value != null) {
+          final report = validate(value, param.getReturnClass(), activeGroups);
           violations.addAll(report.getViolations());
         }
 
