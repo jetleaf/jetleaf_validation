@@ -12,7 +12,6 @@
 // 
 // 🔧 Powered by Hapnium — the Dart backend engine 🍃
 
-import 'package:jetleaf_core/intercept.dart';
 import 'package:jetleaf_lang/lang.dart';
 import 'package:jetleaf_env/env.dart';
 
@@ -436,7 +435,7 @@ abstract interface class ExecutableValidator {
   ValidationReport validateParameters(
     Object target,
     Method method, [
-    MethodArgument? arguments,
+    ExecutableArgument? arguments,
     Set<Class>? groups,
   ]);
 
